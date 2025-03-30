@@ -1,0 +1,2 @@
+# (Maybe) Simple and Efficient Workflow Configuration
+This project mainly focuses on simplifying the workflow for environment setup, aiming to provide some useful tooks and making the development more efficient and concise.
