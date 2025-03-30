@@ -14,4 +14,5 @@ Next we introduce how to install and configure the `zsh` environment.
    ```bash
    chsh -s $(which zsh)
    ```
-3. For some servers, using `chsh` to change the shell may not work due to authorization problems, etc., then one can simply add `zsh` to `~/.bashrc` to explicitly run zsh every time starting a new terminal.
+3. For some servers, using `chsh` to change the shell may not work due to authorization problems, etc., then one can simply add `zsh` to `~/.bashrc` to explicitly run `zsh` every time starting a new terminal.
+4. After installing `zsh`, we define some alias and helpful functions in `example.sh`, which you may find useful and could be directly copied into your `.zshrc` configuration file.
