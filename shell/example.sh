@@ -96,11 +96,23 @@ function mkenv() {
     acti "$env_name"
     pip install --upgrade pip
     pip install uv
+    pip install ipython ipdb
 }
 
 # list available environments
 function lsenv() {
     ls -d $HOME/.python/* | xargs -n 1 basename
+}
+
+function rmenv() {
+    env_name="$1"
+
+    if [ -z "$env_name" ]; then
+        echo "Error: environment name is required."
+        return 1
+    fi
+
+    rm -r "$HOME/.python/${env_name}"
 }
 
 # allocate gpus on a slurm cluster
