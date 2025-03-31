@@ -103,6 +103,14 @@ function lsenv() {
     ls -d $HOME/.python/* | xargs -n 1 basename
 }
 
+# allocate gpus on a slurm cluster
+function igpu() {
+    local gpu=${1:-1}
+    local time=${2:-24}
+    local mem=${3:-256}
+    local cpu=${4:-16}
+    srun --account=YOUR_ACCOUNT --partition=YOUR_PARTITION --nodes=1 --tasks=1 --tasks-per-node=1 --cpus-per-task=$cpu --mem=${mem}g --gpus-per-node=${gpu} --time=${time}:00:00 --pty zsh
+}
 
 
 cd ~
