@@ -14,7 +14,8 @@ alias gd="git diff"
 alias gaa="git add --all"
 
 # python alias
-alias python3="~/miniconda3/bin/python3"
+alias python="~/.python/base/bin/python"
+alias python3="~/.python/base/bin/python3"
 alias py="python3"
 alias upip="python3 -m uv pip"
 
@@ -54,6 +55,31 @@ function now() {
     date '+%Y-%m-%d-%H-%M-%S-%Z'
 }
 
+# activate environment
+function acti() {
+    env_name="$1"
+    activation_script="$HOME/.python/${env_name}/bin/activate"
+
+    if [ ! -f "$activation_script" ]; then
+        echo "Error: script '$activation_script' does not exist."
+        return 1
+    fi
+
+    # activate
+    source "$activation_script"
+
+    ceiling="===== Activated Env: ${env_name} ====="
+    echo "$ceiling"
+
+    # print python path and version 
+    python3_path="$HOME/.python/${env_name}/bin/python3"
+    python_path="$HOME/.python/${env_name}/bin/python"
+    alias python3=$python3_path
+    alias python=$python_path
+    echo "Python path: $python_path"
+    python --version
+}
+
 # create a new python environment
 function mkenv() {
     env_name="$1"
@@ -72,28 +98,12 @@ function mkenv() {
     pip install uv
 }
 
-# activate environment
-function acti() {
-    env_name="$1"
-    activation_script="$HOME/.python/${env_name}/bin/activate"
-
-    if [ ! -f "$activation_script" ]; then
-        echo "Error: script '$activation_script' does not exist."
-        return 1
-    fi
-
-    # activate
-    source "$activation_script"
-
-    ceiling="===== Activated Env: ${env_name} ====="
-    echo "$ceiling"
-
-    # print python path and version 
-    python_path=$(which python)
-    alias python3=$python_path
-    echo "Python path: $python_path"
-    python --version
+# list available environments
+function lsenv() {
+    ls -d $HOME/.python/* | xargs -n 1 basename
 }
 
 
+
 cd ~
+acti base
