@@ -115,7 +115,8 @@ function rmenv() {
     rm -r "$HOME/.python/${env_name}"
 }
 
-# allocate gpus on a slurm cluster
+# slurm
+## allocate gpus on a slurm cluster
 function igpu() {
     local gpu=${1:-1}
     local time=${2:-24}
@@ -124,6 +125,7 @@ function igpu() {
     srun --account=YOUR_ACCOUNT --partition=YOUR_PARTITION --nodes=1 --tasks=1 --tasks-per-node=1 --cpus-per-task=$cpu --mem=${mem}g --gpus-per-node=${gpu} --time=${time}:00:00 --pty zsh
 }
 
+alias sqq="squeue | grep $(whoami)"
 
 cd ~
 acti base
