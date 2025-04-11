@@ -96,7 +96,7 @@ function mkenv() {
     acti "$env_name"
     pip install --upgrade pip
     pip install uv
-    pip install ipython ipdb
+    $HOME/.python/${env_name}/bin/python3 -m uv pip install ipython ipdb
 }
 
 # list available environments
