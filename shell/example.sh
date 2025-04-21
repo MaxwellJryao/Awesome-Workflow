@@ -77,7 +77,7 @@ function acti() {
     alias python3=$python3_path
     alias python=$python_path
     echo "Python path: $python_path"
-    python --version
+    $HOME/.python/${env_name}/bin/python --version
 }
 
 # create a new python environment
