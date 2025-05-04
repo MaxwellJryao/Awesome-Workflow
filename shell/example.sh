@@ -125,6 +125,25 @@ function igpu() {
     srun --account=YOUR_ACCOUNT --partition=YOUR_PARTITION --nodes=1 --tasks=1 --tasks-per-node=1 --cpus-per-task=$cpu --mem=${mem}g --gpus-per-node=${gpu} --time=${time}:00:00 --pty zsh
 }
 
+function lsproc() {
+    local proc_name=$1
+    if [ -z "$proc_name" ]; then
+        echo "Error: process name is required."
+        return 1
+    fi
+    ps -ux | grep $proc_name
+}
+
+function kproc() {
+    local proc_name=$1
+    local proc_id=$(pgrep -f $proc_name)
+    if [ -z "$proc_id" ]; then
+        echo "Error: process '$proc_name' not found."
+        return 1
+    fi
+    ps -ux | grep $proc_id | awk '{print $2}' | xargs -r kill -9
+}
+
 alias sqq="squeue | grep $(whoami)"
 
 cd ~
