@@ -112,6 +112,19 @@ function rmenv() {
         return 1
     fi
 
+    # confirm
+    echo "Are you sure you want to remove environment '$env_name'? (y/n): "
+    read REPLY
+    case $REPLY in
+        y|Y)
+            rm -r "$HOME/.python/${env_name}"
+            echo "Environment '$env_name' removed."
+            ;;
+        n|N)
+            echo "Aborted."
+            return 1
+    esac
+
     rm -r "$HOME/.python/${env_name}"
 }
 
@@ -136,12 +149,27 @@ function lsproc() {
 
 function kproc() {
     local proc_name=$1
+    if [ -z "$proc_name" ]; then
+        echo "Error: process name is required."
+        return 1
+    fi
     local proc_id=$(pgrep -f $proc_name)
     if [ -z "$proc_id" ]; then
         echo "Error: process '$proc_name' not found."
         return 1
     fi
-    ps -ux | grep $proc_id | awk '{print $2}' | xargs -r kill -9
+
+    # confirm
+    echo "Are you sure you want to kill processes '$proc_name'? (y/n): "
+    read REPLY
+    case $REPLY in
+        y|Y)
+            ps -ux | grep $proc_name | awk '{print $2}' | xargs -r kill -9
+            ;;
+        n|N)
+            echo "Aborted."
+            return 1
+    esac
 }
 
 alias sqq="squeue | grep $(whoami)"
