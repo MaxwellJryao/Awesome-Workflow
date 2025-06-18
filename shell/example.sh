@@ -124,8 +124,6 @@ function rmenv() {
             echo "Aborted."
             return 1
     esac
-
-    rm -r "$HOME/.python/${env_name}"
 }
 
 # slurm
