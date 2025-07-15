@@ -1,0 +1,20 @@
+#!/bin/bash
+# log the url on a headless server
+# Save this as /usr/local/bin/url-logger
+# run `chmod +x /usr/local/bin/url-logger`
+# add the following two lines into ~/.bashrc
+# export BROWSER=/usr/local/bin/url-logger
+# export DISPLAY=""
+
+# File to save URLs
+URL_FILE="$HOME/opened_urls.txt"
+
+# Create the file if it doesn't exist
+touch "$URL_FILE"
+
+# Append the URL with timestamp
+echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$URL_FILE"
+
+# Optional: Also print to console
+echo "URL would be opened: $1"
+echo "Saved to: $URL_FILE"
