@@ -78,7 +78,7 @@ source $ZSH/oh-my-zsh.sh
 HISTSIZE=50000
 SAVEHIST=50000
 setopt HIST_IGNORE_ALL_DUPS  # remove older duplicate entries
-setopt SHARE_HISTORY         # share history between sessions
+setopt INC_APPEND_HISTORY    # write history immediately (not at exit), but don't share across sessions
 setopt HIST_REDUCE_BLANKS    # remove unnecessary blanks
 
 # User configuration
