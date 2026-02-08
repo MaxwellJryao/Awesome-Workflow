@@ -74,6 +74,13 @@ plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
+# History optimization
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS  # remove older duplicate entries
+setopt SHARE_HISTORY         # share history between sessions
+setopt HIST_REDUCE_BLANKS    # remove unnecessary blanks
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -116,12 +123,14 @@ alias gs="git status"
 alias gl="git log"
 alias gd="git diff"
 alias gaa="git add --all"
+alias gb="git branch"
+alias glg="git log --oneline --graph --decorate -20"
 
 # gpu alias
 alias nvi="nvidia-smi"
 alias gpu="nvitop -m auto"
-## kill process using gpu
-alias gkill="fuser -v /dev/nvidia0 | awk '{print $0}' | xargs kill -9"
+## kill process using gpu (all GPUs)
+alias gkill="fuser -v /dev/nvidia* 2>/dev/null | awk '{print \$0}' | xargs -r kill -9"
 
 function agpus() {
     export CUDA_VISIBLE_DEVICES="$1"
@@ -135,6 +144,7 @@ function mkcd() {
 alias tat="tmux attach -t"
 alias tns="tmux new-session -s"
 alias tls="tmux list-sessions"
+alias tks="tmux kill-session -t"
 
 function now() {
     date '+%Y-%m-%d-%H-%M-%S-%Z'
@@ -156,19 +166,12 @@ function acti() {
         return 1
     fi
 
-    # activate
+    # activate (source activate already prepends the venv bin to PATH)
     source "$activation_script"
 
-    ceiling="===== Activated Env: ${env_name} ====="
-    echo "$ceiling"
-
-    # print python path and version 
-    python3_path="$HOME/.python/${env_name}/bin/python3"
-    python_path="$HOME/.python/${env_name}/bin/python"
-    alias python3=$python3_path
-    alias python=$python_path
-    echo "Python path: $python_path"
-    $HOME/.python/${env_name}/bin/python --version
+    echo "===== Activated Env: ${env_name} ====="
+    echo "Python path: $(which python)"
+    python --version
 }
 
 # create a new python environment
@@ -228,7 +231,7 @@ function lsproc() {
         echo "Error: process name is required."
         return 1
     fi
-    ps -ux | grep $proc_name
+    ps -ux | grep "$proc_name" | grep -v grep
 }
 
 function kproc() {
@@ -248,7 +251,7 @@ function kproc() {
     read REPLY
     case $REPLY in
         y|Y)
-            ps -ux | grep $proc_name | awk '{print $2}' | xargs -r kill -9
+            ps -ux | grep "$proc_name" | grep -v grep | awk '{print $2}' | xargs -r kill -9
             ;;
         n|N)
             echo "Aborted."
@@ -262,12 +265,68 @@ alias du1="du -h --max-depth=1"
 # get public ip
 alias myip="curl ifconfig.me"
 
+# --- quick navigation ---
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# --- quick tools ---
+alias cl="clear"
+
+# --- universal extract ---
+function extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xjf "$1" ;;
+            *.tar.gz)  tar xzf "$1" ;;
+            *.tar.xz)  tar xJf "$1" ;;
+            *.bz2)     bunzip2 "$1" ;;
+            *.gz)      gunzip "$1" ;;
+            *.tar)     tar xf "$1" ;;
+            *.tbz2)    tar xjf "$1" ;;
+            *.tgz)     tar xzf "$1" ;;
+            *.zip)     unzip "$1" ;;
+            *.7z)      7z x "$1" ;;
+            *.zst)     zstd -d "$1" ;;
+            *)         echo "Unknown format: '$1'" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# --- find largest files/dirs ---
+function bigfiles() {
+    local n=${1:-10}
+    du -ah . 2>/dev/null | sort -rh | head -n "$n"
+}
+
+# --- quick HTTP file server ---
+function serve() {
+    local port=${1:-8000}
+    python3 -m http.server "$port"
+}
+
+# --- retry a command ---
+function retry() {
+    local n=${1:-3}
+    shift
+    until "$@"; do
+        ((n--)) || { echo "Failed after retries"; return 1; }
+        echo "Retrying... ($n left)"
+        sleep 1
+    done
+}
+
 # export LANG=zh_CN.UTF-8
 # export LC_ALL=zh_CN.UTF-8
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
-export LD_PRELOAD="$LD_PRELOAD:/lib/aarch64-linux-gnu/libgomp.so.1"
+# libgomp preload — 自动适配 aarch64 / x86_64
+_gomp="/lib/$(uname -m)-linux-gnu/libgomp.so.1"
+[[ -f "$_gomp" ]] && export LD_PRELOAD="${LD_PRELOAD:+$LD_PRELOAD:}$_gomp"
+unset _gomp
 export ACCEPT_EULA=Y
 export OMNI_KIT_ACCEPT_EULA=Y
 export LD_LIBRARY_PATH=/usr/local/cuda-13.0/compat:$LD_LIBRARY_PATH
