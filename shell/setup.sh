@@ -14,3 +14,6 @@ curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh
 sh /tmp/uv-install.sh
 rm -f /tmp/uv-install.sh
 source $HOME/.local/bin/env
+
+# activate zsh from bash
+echo "zsh" >> ~/.bashrc
