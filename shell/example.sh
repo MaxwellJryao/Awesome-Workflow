@@ -1,7 +1,120 @@
-# change HOME path
-export HOME="/shared/storage-01/$(whoami)"
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
-# git alias
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time Oh My Zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="robbyrussell"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+
+source $ZSH/oh-my-zsh.sh
+
+# History optimization
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS  # remove older duplicate entries
+setopt INC_APPEND_HISTORY    # write history immediately (not at exit), but don't share across sessions
+setopt HIST_REDUCE_BLANKS    # remove unnecessary blanks
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
+
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+export WANDB_API_KEY=""
+export HF_TOKEN=""
+export PY_ROOT=""
+export HF_HOME=""
+
 alias gp="git push"
 alias gpl="git pull"
 alias gco="git checkout"
@@ -12,77 +125,61 @@ alias gs="git status"
 alias gl="git log"
 alias gd="git diff"
 alias gaa="git add --all"
-
-# python alias
-alias python="~/.python/base/bin/python"
-alias python3="~/.python/base/bin/python3"
-alias py="python3"
-alias upip="python3 -m uv pip"
+alias gb="git branch"
+alias glg="git log --oneline --graph --decorate -20"
 
 # gpu alias
 alias nvi="nvidia-smi"
 alias gpu="nvitop -m auto"
-## kill process using gpu
-alias gkill="fuser -v /dev/nvidia0 | awk '{print $0}' | xargs kill -9"
+## kill process using gpu (all GPUs)
+alias gkill="fuser -v /dev/nvidia* 2>/dev/null | awk '{print \$0}' | xargs -r kill -9"
+
 function agpus() {
     export CUDA_VISIBLE_DEVICES="$1"
 }
 
-# dirs and files alias
 function mkcd() {
     mkdir -p "$1"
     cd "$1"
 }
-alias du="du -ah --max-depth=1 | sort -h"
 
-# tmux alias
 alias tat="tmux attach -t"
 alias tns="tmux new-session -s"
 alias tls="tmux list-sessions"
+alias tks="tmux kill-session -t"
 
-# ray
-export RAY_ROOT_DIR="/shared/storage-01/$(whoami)/.cache/ray"
-
-# wandb
-export WANDB_API_KEY=""
-
-# huggingface
-export HF_HOME="/shared/storage-01/$(whoami)/.cache/huggingface"
-
-# timestamp
-# yyyy-mm-dd-hh-mm-ss-timezone
 function now() {
     date '+%Y-%m-%d-%H-%M-%S-%Z'
+}
+
+alias upip="uv pip"
+
+function lsenv() {
+    ls -d $PY_ROOT/.python/* | xargs -n 1 basename
 }
 
 # activate environment
 function acti() {
     env_name="$1"
-    activation_script="$HOME/.python/${env_name}/bin/activate"
+    activation_script="$PY_ROOT/.python/${env_name}/bin/activate"
 
     if [ ! -f "$activation_script" ]; then
         echo "Error: script '$activation_script' does not exist."
         return 1
     fi
 
-    # activate
+    # activate (source activate already prepends the venv bin to PATH)
     source "$activation_script"
 
-    ceiling="===== Activated Env: ${env_name} ====="
-    echo "$ceiling"
-
-    # print python path and version 
-    python3_path="$HOME/.python/${env_name}/bin/python3"
-    python_path="$HOME/.python/${env_name}/bin/python"
-    alias python3=$python3_path
-    alias python=$python_path
-    echo "Python path: $python_path"
-    $HOME/.python/${env_name}/bin/python --version
+    echo "===== Activated Env: ${env_name} ====="
+    echo "Python path: $(which python)"
+    python --version
 }
 
 # create a new python environment
 function mkenv() {
     env_name="$1"
+    python_version="${2:-3.12}"
 
     if [ -z "$env_name" ]; then
         echo "Error: environment name is required."
@@ -90,18 +187,12 @@ function mkenv() {
     fi
 
     # create environment
-    python3 -m venv "$HOME/.python/${env_name}"
+    uv venv "$PY_ROOT/.python/${env_name}" --python "${python_version}"
 
     # activate environment
     acti "$env_name"
-    pip install --upgrade pip
-    pip install uv
-    $HOME/.python/${env_name}/bin/python3 -m uv pip install ipython ipdb
-}
-
-# list available environments
-function lsenv() {
-    ls -d $HOME/.python/* | xargs -n 1 basename
+    uv pip install pip uv ipython ipdb
+    acti "$env_name"
 }
 
 function rmenv() {
@@ -117,7 +208,7 @@ function rmenv() {
     read REPLY
     case $REPLY in
         y|Y)
-            rm -r "$HOME/.python/${env_name}"
+            rm -r "$PY_ROOT/.python/${env_name}"
             echo "Environment '$env_name' removed."
             ;;
         n|N)
@@ -126,15 +217,15 @@ function rmenv() {
     esac
 }
 
-# slurm
-## allocate gpus on a slurm cluster
-function igpu() {
-    local gpu=${1:-1}
-    local time=${2:-24}
-    local mem=${3:-256}
-    local cpu=${4:-16}
-    srun --account=YOUR_ACCOUNT --partition=YOUR_PARTITION --nodes=1 --tasks=1 --tasks-per-node=1 --cpus-per-task=$cpu --mem=${mem}g --gpus-per-node=${gpu} --time=${time}:00:00 --pty zsh
+# 为 acti 和 rmenv 提供环境名称自动补全
+_acti_completion() {
+    local -a envs
+    # 获取 $PY_ROOT/.python/ 下的目录名
+    envs=($PY_ROOT/.python/*(/:t))
+    _describe 'environments' envs
 }
+compdef _acti_completion acti
+compdef _acti_completion rmenv
 
 function lsproc() {
     local proc_name=$1
@@ -142,7 +233,7 @@ function lsproc() {
         echo "Error: process name is required."
         return 1
     fi
-    ps -ux | grep $proc_name
+    ps -ux | grep "$proc_name" | grep -v grep
 }
 
 function kproc() {
@@ -162,7 +253,7 @@ function kproc() {
     read REPLY
     case $REPLY in
         y|Y)
-            ps -ux | grep $proc_name | awk '{print $2}' | xargs -r kill -9
+            ps -ux | grep "$proc_name" | grep -v grep | awk '{print $2}' | xargs -r kill -9
             ;;
         n|N)
             echo "Aborted."
@@ -170,7 +261,67 @@ function kproc() {
     esac
 }
 
-alias sqq="squeue | grep $(whoami)"
+alias ipy="ipython"
 
-cd ~
-acti base
+alias du1="du -h --max-depth=1"
+# get public ip
+alias myip="curl ifconfig.me"
+
+# --- quick navigation ---
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# --- quick tools ---
+alias cl="clear"
+
+# --- universal extract ---
+function extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xjf "$1" ;;
+            *.tar.gz)  tar xzf "$1" ;;
+            *.tar.xz)  tar xJf "$1" ;;
+            *.bz2)     bunzip2 "$1" ;;
+            *.gz)      gunzip "$1" ;;
+            *.tar)     tar xf "$1" ;;
+            *.tbz2)    tar xjf "$1" ;;
+            *.tgz)     tar xzf "$1" ;;
+            *.zip)     unzip "$1" ;;
+            *.7z)      7z x "$1" ;;
+            *.zst)     zstd -d "$1" ;;
+            *)         echo "Unknown format: '$1'" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# --- find largest files/dirs ---
+function bigfiles() {
+    local n=${1:-10}
+    du -ah . 2>/dev/null | sort -rh | head -n "$n"
+}
+
+# --- quick HTTP file server ---
+function serve() {
+    local port=${1:-8000}
+    python3 -m http.server "$port"
+}
+
+# --- retry a command ---
+function retry() {
+    local n=${1:-3}
+    shift
+    until "$@"; do
+        ((n--)) || { echo "Failed after retries"; return 1; }
+        echo "Retrying... ($n left)"
+        sleep 1
+    done
+}
+
+# export LANG=zh_CN.UTF-8
+# export LC_ALL=zh_CN.UTF-8
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
