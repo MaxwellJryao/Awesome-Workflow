@@ -16,4 +16,8 @@ rm -f /tmp/uv-install.sh
 source $HOME/.local/bin/env
 
 # activate zsh from bash
-echo "zsh" >> ~/.bashrc
+cat <<EOF >> ~/.bashrc
+if [[ $- == *i* ]] && command -v zsh &>/dev/null; then
+    exec zsh
+fi
+EOF
