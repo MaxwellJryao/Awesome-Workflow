@@ -325,3 +325,60 @@ function retry() {
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
+# --- WORK_DIR shortcuts ---
+export WORK_DIR=""
+
+function wcd() {
+    if [ -z "$1" ]; then
+        cd "$WORK_DIR"
+    else
+        cd "$WORK_DIR/$1"
+    fi
+}
+
+function wls() {
+    local -a args
+    local path=""
+    local arg
+    for arg in "$@"; do
+        if [[ "$arg" = -* ]]; then
+            args+="$arg"
+        else
+            path="$arg"
+        fi
+    done
+    if [[ -z "$path" ]]; then
+        /usr/bin/ls --color=tty $args "$WORK_DIR"
+    else
+        /usr/bin/ls --color=tty $args "$WORK_DIR/$path"
+    fi
+}
+
+# tab completion for wcd and wls: complete directories under $WORK_DIR
+_wcd_completion() {
+    local -a dirs
+    local input="${words[2]}"
+    local search_dir="$WORK_DIR/${input}"
+
+    # If input contains a partial path, complete from the parent
+    if [[ -d "$search_dir" ]]; then
+        dirs=("${search_dir}"/*(/N:t))
+        if [[ -n "$input" ]]; then
+            dirs=("${dirs[@]/#/${input}/}")
+        fi
+    else
+        local parent="${input%/*}"
+        local prefix="${input##*/}"
+        if [[ "$input" == */* && -d "$WORK_DIR/$parent" ]]; then
+            dirs=("$WORK_DIR/$parent"/${prefix}*(/N:t))
+            dirs=("${dirs[@]/#/${parent}/}")
+        else
+            dirs=("$WORK_DIR"/${prefix}*(/N:t))
+        fi
+    fi
+
+    compadd -S '/' -q -- "${dirs[@]}"
+}
+compdef _wcd_completion wcd
+compdef _wcd_completion wls
+
