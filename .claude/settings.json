@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/jiaruiy/.claude/codex-review-on-change.mjs\"",
+            "timeout": 900,
+            "statusMessage": "Codex review (only if code changed)…"
+          }
+        ]
+      }
+    ]
+  }
+}
