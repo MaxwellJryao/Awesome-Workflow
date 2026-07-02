@@ -1,0 +1,41 @@
+# Create at https://api.slack.com/apps -> Create New App -> From a manifest.
+# Then generate an app-level token with connections:write and install the app.
+# Existing apps must be reinstalled after adding assistant/files/commands scopes.
+display_information:
+  name: codex-local
+  description: Private bridge to local Codex CLI sessions
+  background_color: "#111827"
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: codex-local
+    always_online: false
+  assistant_view:
+    assistant_description: Local Codex bridge; every New Chat has its own Codex context
+  slash_commands:
+    - command: /bridge
+      description: Codex bridge status, stop, and help
+      usage_hint: "[status|stop|help]"
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - im:history
+      - assistant:write
+      - commands
+      - files:read
+settings:
+  event_subscriptions:
+    bot_events:
+      - message.im
+      - assistant_thread_started
+      - assistant_thread_context_changed
+  interactivity:
+    is_enabled: true
+  socket_mode_enabled: true
+  org_deploy_enabled: false
+  token_rotation_enabled: false
