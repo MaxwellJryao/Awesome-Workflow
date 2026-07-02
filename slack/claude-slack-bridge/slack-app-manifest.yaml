@@ -1,0 +1,52 @@
+# 新建 app：https://api.slack.com/apps -> Create New App -> From a manifest 粘贴此文件
+# 创建后：
+#   1. Basic Information -> App-Level Tokens -> Generate（scope: connections:write）=> xapp- token
+#   2. Install App -> Install to Workspace => xoxb- bot token
+#   3. 在 Slack 里给这个 app 发一条 DM 即可开始使用
+#
+# 已有 app 升级（多会话 New Chat / History + /bridge 命令 + 附件支持）：
+#   1. https://api.slack.com/apps -> 选中 app -> App Manifest -> 粘贴此文件保存
+#   2. 因新增了 scope（assistant:write / commands / files:*），需要 Reinstall to
+#      Workspace（token 一般不变，若变了更新 .env 并重启 bridge）
+#   3. 重开 app 的 DM 页面，出现 New Chat 按钮和 History 标签即生效
+#
+# slash 命令走 Socket Mode 投递，不需要 url 字段
+display_information:
+  name: claude-cw-dfw
+  description: Claude Code bridge on cw-dfw
+  background_color: "#704627"
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: claude-cw-dfw
+    always_online: true
+  assistant_view:
+    assistant_description: Claude Code bridge on cw-dfw (每个 New Chat 是一个独立会话)
+  slash_commands:
+    - command: /bridge
+      description: Bridge 控制（status 状态 / stop 中断当前回合 / help 帮助）
+      usage_hint: "[status|stop|help]"
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - im:history
+      - assistant:write
+      - commands
+      - files:read
+      - files:write
+settings:
+  event_subscriptions:
+    bot_events:
+      - message.im
+      - assistant_thread_started
+      - assistant_thread_context_changed
+  interactivity:
+    is_enabled: true
+  socket_mode_enabled: true
+  org_deploy_enabled: false
+  token_rotation_enabled: false

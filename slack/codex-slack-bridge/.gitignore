@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+state/
+*.log
+slurm-*.out
+slurm-*.err
+slurm-*.log

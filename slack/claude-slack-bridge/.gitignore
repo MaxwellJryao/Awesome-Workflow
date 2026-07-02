@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+slurm-*.out
+slurm-*.err
+slurm-*.log
+*.lock
+sessions.json
+sessions.json.tmp
+session_id.txt
+uploads/
